@@ -1,7 +1,7 @@
 <?php
 
 /*
- * media: The media metadata model
+ * programmes: A front-end to an asset store
  *
  * Copyright 2010 Mo McRoberts.
  *
@@ -34,17 +34,7 @@ class MediaBrowseShow extends MediaBrowser
 		$this->addCrumb();
 		if(null !== ($tag = $this->request->consume()))
 		{
-			$obj = null;
-			if(null !== ($uuid = UUID::isUUID($tag)))
-			{
-				$rs = $this->model->query(array('uuid' => $uuid, 'parent' => $this->object->uuid));
-				$obj = $rs->next();
-			}
-			else
-			{
-				$rs = $this->model->query(array('tag' => $tag, 'parent' => $this->object->uuid));
-				$obj = $rs->next();
-			}
+			$obj = $this->model->locateObject($tag, $this->object->uuid);
 			if(!$obj)
 			{				
 				return $this->error(Error::OBJECT_NOT_FOUND);
