@@ -49,8 +49,22 @@ class MediaBrowseEpisode extends MediaBrowser
 			{				
 				return $this->error(Error::OBJECT_NOT_FOUND);
 			}
-			$this->version = $obj;
-			
+			$this->version = $obj;			
+		}
+		if(null !== ($tag = $this->request->consume()))
+		{
+			switch($tag)
+			{
+			case 'player':
+				require_once(MODULES_ROOT . 'media/player.php');
+				$inst = new MediaPlayer();
+				$inst->object = $this->version;
+				$inst->episode = $this->object;
+				$inst->process($this->request);
+				return false;
+			default:
+				return $this->error(Error::OBJECT_NOT_FOUND);
+			}
 		}
 		return true;
 	}
@@ -84,14 +98,18 @@ class MediaBrowseEpisode extends MediaBrowser
 		if(strlen($uri) > 1 && substr($uri, -1) == '/') $uri = substr($uri, 0, -1);		
 		$this->links[] = array('rel' => 'alternate', 'type' => 'application/rdf+xml', 'href' => $uri . '.rdf');
 		$this->links[] = array('rel' => 'alternate', 'type' => 'application/json', 'href' => $uri . '.json');
-		if(isset($this->object['template']))
+		if(!$this->player)
 		{
-			$this->vars['custom'] = $this->object['template'];
-			if(isset($this->object['template']['pageType']))
+			if(isset($this->object['template']))		   
 			{
-				$this->vars['page_type'] .= ' ' . $this->object['template']['pageType'];
+				$this->vars['custom'] = $this->object['template'];
+				if(isset($this->object['template']['pageType']))
+				{
+					$this->vars['page_type'] .= ' ' . $this->object['template']['pageType'];
+				}
+				   
 			}
-		}	   
+		}
 		$this->vars['version'] = $this->version;
 	}
 
