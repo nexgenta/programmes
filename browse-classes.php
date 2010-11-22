@@ -35,6 +35,8 @@ class MediaBrowseClasses extends MediaBrowser
 	protected function getObject()
 	{
 		$this->scheme = $this->object;
+		$this->crumbName = $this->object->title;
+		$this->addCrumb($this->request);
 		$this->kindTitle = $this->title = $this->object->title;
 		$this->kind = $this->object->singular;
 		if(isset($this->object->tvaNamespace))
