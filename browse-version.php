@@ -44,7 +44,7 @@ class MediaBrowseVersion extends MediaBrowser
 		return true;
 	}
 	
-	protected function perform_GET_RDF()
+	protected function perform_GET_RDF_XXX()
 	{
 		$this->request->header('Content-type', 'application/rdf+xml');
 		$this->request->flush();
