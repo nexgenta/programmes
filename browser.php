@@ -30,6 +30,7 @@ abstract class MediaBrowser extends Page
 	{
 		$uri = $this->request->pageUri;
 		if(strlen($uri) > 1 && substr($uri, -1) == '/') $uri = substr($uri, 0, -1);
+		header('Content-Location: ' . $uri . '.rdf');
 
 		$doc = new RDFDocument($uri . '.rdf', $this->request->root . $this->object->__get('instanceRelativeURI'));
 		$this->object->rdf($doc, $this->request);
@@ -44,5 +45,13 @@ abstract class MediaBrowser extends Page
 		{
 			writeLn($xml);
 		}
+	}
+
+	protected function assignTemplate()
+	{
+		parent::assignTemplate();
+		$uri = $this->request->pageUri;
+		if(strlen($uri) > 1 && substr($uri, -1) == '/') $uri = substr($uri, 0, -1);
+		$this->links[] = array('href' => $uri . '.rdf', 'type' => 'application/rdf+xml', 'rel' => 'alternate');
 	}
 }
